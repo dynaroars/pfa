@@ -1,17 +1,37 @@
 import z3
 from adapter import Input, PathCond, Adapter
 
+
+
 # EXAMPLE 1: Guolong's example
 
 # def f(i, j, k):
-#     if(0 < i < 10):
-#         if(i < 5):
-#             o = 5 / (i - 2)   # err1
-#         else:
-#             o = 6 / (i - 3)   # err2
-#     else:
-#         o = 2*i
+    # if(0 < i < 10):
+        # if(i < 5):
+            # o = 5 / (i - 2)   # err1
+        # else:
+            # o = 6 / (i - 3)   # err2
+    # else:
+        # o = 2*i
 
+def f1(a, b, c, d):
+	if(a > 2):
+		if(b > 1):
+			result = (12 + c)/(d - 1)
+		else:
+			result = (4 - a)/(2 - b)
+	else:
+		result = (a + b) * d
+
+def exf1():
+	mya, myb, myc, myd = z3.Ints('a b c d')
+	inp = Input([mya, myb, myc, myd], [3, 2, 6, 1])
+	bad_pathconds = [PathCond([mya > 2, myb > 1, myd == 1, myb == 2])]
+	
+	return inp, bad_pathconds
+
+inp, bad_pathconds = exf1()
+Adapter(inp, bad_pathconds).doit()
 
 def ex1a():
     # path condition leading to err1: 0 < i < 10 & i < 5 & i = 2
@@ -21,9 +41,8 @@ def ex1a():
 
     return inp, bad_pathconds
 
-
-# inp, bad_pathconds = ex1a()
-# Adapter(inp, bad_pathconds).doit()
+inp, bad_pathconds = ex1a()
+#Adapter(inp, bad_pathconds).doit()
 
 
 def ex1b():
@@ -38,7 +57,7 @@ def ex1b():
     return inp, bad_pathconds
 
 
-# inp, bad_pathconds = ex1b()
+inp, bad_pathconds = ex1b()
 # Adapter(inp, bad_pathconds).doit()
 
 
@@ -65,17 +84,19 @@ inp, bad_pathconds = ex1c()
 
 # EXAMPLE 2: from PFA proposal
 
+
+
 # int vandi ( char* str )
 # {
 # char id [3];
 # assert ( *str != '_' ) ;
 # if ( isvalid(str)) {
-#   int i = 0;
-#   while ( *str != null )
-#     id [ i++] = *str++;
-#     return intern ( id ) ;
+  # int i = 0;
+  # while ( *str != null )
+    # id [ i++] = *str++;
+    # return intern ( id ) ;
 # } else
-#   // default behavior
+  # // default behavior
 # return 1;
 # }
 
@@ -124,8 +145,8 @@ def ex3a():
     return inp, bad_pathconds
 
 
-inp, bad_pathconds = ex3a()
-Adapter(inp, bad_pathconds).doit()
+#inp, bad_pathconds = ex3a()
+#Adapter(inp, bad_pathconds).doit()
 
 # MISCS
 
