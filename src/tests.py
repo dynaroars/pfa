@@ -7,10 +7,16 @@ from adapter import Input, PathCond, Adapter
 # x = sp.Symbol('x')
 # print(sp.diff(x**5))
 
+
+# b = 2
+# c = 6
+# result = (math.sqrt(2 - b))/(math.sqrt(3 - c))
+# print(result)
+
 def check_square_root(a, b, c):
 	if (-2 < a < 5):
 		if (c < 6):
-			result = (math.sqrt(b))/(3 - c) # potentially square root and dividing by zero error 1
+			result = (math.sqrt(2 - b))/(3 - c) # potentially square root and dividing by zero error 1
 		else:
 			result = math.sqrt(c) # potentially square root error 2
 	else:
@@ -19,8 +25,8 @@ def check_square_root(a, b, c):
 def ex1_square_root():
 	#path condition resulting in square root error 1
 	mya, myb, myc = z3.Ints('a b c')
-	inp = Input([mya, myb, myc], [3, -2, 3])
-	bad_pathconds = [PathCond([mya > -2, mya < 5, myc < 6, myb == -2, myc == 3])]
+	inp = Input([mya, myb, myc], [3, 4, 3])
+	bad_pathconds = [PathCond([mya > -2, mya < 5, myc < 6, myb > 2, myc == 3])]
 	
 	return inp, bad_pathconds
 
