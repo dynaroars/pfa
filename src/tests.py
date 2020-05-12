@@ -17,20 +17,32 @@ from adapter import Input, PathCond, Adapter
 def f1(a, b, c, d):
 	if(a > 2):
 		if(b > 1):
-			result = (12 + c)/(d - 1)
+			result = (12 + c)/(d - 1) #error 1
 		else:
-			result = (4 - a)/(2 - b)
+			result = (4 - a)/(2 - b) #error 2
 	else:
 		result = (a + b) * d
 
-def exf1():
+def exf1a():
+	# path condition resulting in error 1: a > 2 & b > 1 & d > 1
 	mya, myb, myc, myd = z3.Ints('a b c d')
 	inp = Input([mya, myb, myc, myd], [3, 2, 6, 1])
-	bad_pathconds = [PathCond([mya > 2, myb > 1, myd == 1, myb == 2])]
+	bad_pathconds = [PathCond([mya > 2, myb > 1, myd == 1])]
 	
 	return inp, bad_pathconds
 
-inp, bad_pathconds = exf1()
+inp, bad_pathconds = exf1a()
+# Adapter(inp, bad_pathconds).doit()
+
+def exf1b():
+	# path condition resulting in error 2: a > 2 & b > 1 & b == 2
+	mya, myb, myc, myd = z3.Ints('a b c d')
+	inp = Input([mya, myb, myc, myd], [3, 2, 3, 4])
+	bad_pathconds = [PathCond([mya > 2, myb > 1, myb == 2])]
+	
+	return inp, bad_pathconds
+
+inp, bad_pathconds = exf1b()
 Adapter(inp, bad_pathconds).doit()
 
 def ex1a():
