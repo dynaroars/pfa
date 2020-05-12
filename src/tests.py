@@ -1,7 +1,33 @@
 import z3
+import math
+import sympy as sp
 from adapter import Input, PathCond, Adapter
 
+# NEW EXAMPLE
+# x = sp.Symbol('x')
+# print(sp.diff(x**5))
 
+def check_square_root(a, b, c):
+	if (-2 < a < 5):
+		if (c < 6):
+			result = (math.sqrt(b))/(3 - c) # potentially square root and dividing by zero error 1
+		else:
+			result = math.sqrt(c) # potentially square root error 2
+	else:
+		result = math.sqrt(a) # potentially square root error 3
+		
+def ex1_square_root():
+	#path condition resulting in square root error 1
+	mya, myb, myc = z3.Ints('a b c')
+	inp = Input([mya, myb, myc], [3, -2, 3])
+	bad_pathconds = [PathCond([mya > -2, mya < 5, myc < 6, myb == -2, myc == 3])]
+	
+	return inp, bad_pathconds
+
+inp, bad_pathconds = ex1_square_root()
+Adapter(inp, bad_pathconds).doit()
+
+		
 
 # EXAMPLE 1: Guolong's example
 
@@ -14,7 +40,7 @@ from adapter import Input, PathCond, Adapter
     # else:
         # o = 2*i
 
-def f1(a, b, c, d):
+def f1(a, b, c, d): 
 	if(a > 2):
 		if(b > 1):
 			result = (12 + c)/(d - 1) #error 1
@@ -43,7 +69,26 @@ def exf1b():
 	return inp, bad_pathconds
 
 inp, bad_pathconds = exf1b()
-Adapter(inp, bad_pathconds).doit()
+# Adapter(inp, bad_pathconds).doit()
+
+def exf1c():
+	"""
+    violated path conditions to error 1 + a fake one:
+    - a > 2 & b > 1 & d == 1
+    - c >= 0
+    can be fixed by changing d to !1 and c to < 0
+    """
+	mya, myb, myc, myd = z3.Ints('a b c d')
+	inp = Input([mya, myb, myc, myd], [3, 2, 6, 1])
+	bad_pathconds = [
+		PathCond([mya > 2, myb > 1, myd == 1]),
+		PathCond([myc >=0])
+	]
+	
+	return inp, bad_pathconds
+
+inp, bad_pathconds = exf1c()
+# Adapter(inp, bad_pathconds).doit()
 
 def ex1a():
     # path condition leading to err1: 0 < i < 10 & i < 5 & i = 2
@@ -67,6 +112,7 @@ def ex1b():
     bad_pathconds = [PathCond([0 < myi, myi < 10, myi < 5, myi == 3])]
 
     return inp, bad_pathconds
+
 
 
 inp, bad_pathconds = ex1b()
@@ -142,6 +188,7 @@ inp, bad_pathconds = ex2a()
 #   derivative(y,5);
 #   return 0;
 # }
+
 
 
 def ex3a():
