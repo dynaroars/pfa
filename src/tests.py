@@ -26,14 +26,28 @@ def ex1_square_root():
 	#path condition resulting in square root error 1
 	mya, myb, myc = z3.Ints('a b c')
 	inp = Input([mya, myb, myc], [3, 4, 3])
-	bad_pathconds = [PathCond([mya > -2, mya < 5, myc < 6, myb > 2, myc == 3])]
+	bad_pathconds = [
+		PathCond([mya > -2, mya < 5, myc < 6, myc == 3]),
+		PathCond([mya > -2, mya < 5, myc < 6, myb > 2])
+	]
 	
 	return inp, bad_pathconds
 
 inp, bad_pathconds = ex1_square_root()
-Adapter(inp, bad_pathconds).doit()
+# Adapter(inp, bad_pathconds).doit()
 
-		
+def ex2_square_root():
+	#path condition resulting in square root error 2
+	mya, myb, myc = z3.Ints('a b c')
+	inp = Input([mya, myb, myc], [3, 4, -5])
+	bad_pathconds = [
+		PathCond([mya > -2, mya < 5, myc < 0 ])
+	]
+	
+	return inp, bad_pathconds
+
+inp, bad_pathconds = ex2_square_root()
+Adapter(inp, bad_pathconds).doit()
 
 # EXAMPLE 1: Guolong's example
 
