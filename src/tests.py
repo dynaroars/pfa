@@ -47,7 +47,7 @@ def ex2_square_root():
 	return inp, bad_pathconds
 
 inp, bad_pathconds = ex2_square_root()
-Adapter(inp, bad_pathconds).doit()
+# Adapter(inp, bad_pathconds).doit()
 
 # EXAMPLE 1: Guolong's example
 
@@ -58,6 +58,7 @@ Adapter(inp, bad_pathconds).doit()
         # else:
             # o = 6 / (i - 3)   # err2
     # else:
+        # o = 2*i
         # o = 2*i
 
 def f1(a, b, c, d): 
@@ -188,25 +189,25 @@ def ex2a():
 
 
 inp, bad_pathconds = ex2a()
-# Adapter(inp, bad_pathconds).doit()
+Adapter(inp, bad_pathconds).doit()
 
 # EXAMPLE 3: Didier's
 
 # $input int y[5];
 # int * derivative(int y[], int size){
-#     int h = 1;
-#     int diff[size];
-#     diff[0]=0;
-#     for (int i = 1; i < size-1; i++) {
-#         diff[i] = 2*h/(-y[i-1]+y[i+1]); //possible div by zero
-#         $pathCondition();
-#     }
-#     diff[size-1]=0;
-#     return diff;
+    # int h = 1;
+    # int diff[size];
+    # diff[0]=0;
+    # for (int i = 1; i < size-1; i++) {
+        # diff[i] = 2*h/(-y[i-1]+y[i+1]); //possible div by zero
+        # $pathCondition();
+    # }
+    # diff[size-1]=0;
+    # return diff;
 # }
 # int main() {
-#   derivative(y,5);
-#   return 0;
+  # derivative(y,5);
+  # return 0;
 # }
 
 
@@ -223,9 +224,25 @@ def ex3a():
 
     return inp, bad_pathconds
 
+inp, bad_pathconds = ex3a()
+# Adapter(inp, bad_pathconds).doit()
 
-#inp, bad_pathconds = ex3a()
-#Adapter(inp, bad_pathconds).doit()
+def ex3b():
+    y0, y1, y2, y3, y4, y5 = z3.Ints('y0 y1 y2 y3 y4 y5')
+    inp = Input([y0, y1, y2, y3, y4, y5], [5, 2, 2, 2, 4, 2])
+    bad_pathconds = [
+        PathCond([y0 == y2]),
+        PathCond([y0 != y2, y1 == y3]),
+        PathCond([y0 != y2, y1 != y3, y2 == y4]),
+        PathCond([y0 != y2, y1 != y3, y2 != y4, y3 == y5])
+    ]
+
+    return inp, bad_pathconds
+
+inp, bad_pathconds = ex3b()
+Adapter(inp, bad_pathconds).doit()
+
+
 
 # MISCS
 
