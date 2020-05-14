@@ -291,7 +291,7 @@ def ex4f1():
 	return inp, bad_pathconds
 	
 inp, bad_pathconds = ex4f1()
-Adapter(inp, bad_pathconds).doit()
+# Adapter(inp, bad_pathconds).doit()
 		
 def ex4f2():
 	a1, a2, a3, a4, a5 = z3.Ints('a1 a2 a3 a4 a5')
@@ -312,6 +312,33 @@ def ex4f2():
 inp, bad_pathconds = ex4f2()
 # Adapter(inp, bad_pathconds).doit()
 
+#EXAMPLE 5: Logarithm
+def f1_ex5(a):
+	for x in a:
+		l = (math.log(x))/(x-5)
+		print(l)
+		
+# a = [1,2,3,4,5]
+# f1_ex5(a)
 
+def ex5f1():
+	a1, a2, a3, a4, a5 = z3.Ints('a1 a2 a3 a4 a5')
+	inp = Input([a1, a2, a3, a4, a5],[5, -5, 5, -5, 5])
+	bad_pathconds = [
+		PathCond([a1 < 1]),
+		PathCond([a1 == 5]),
+		PathCond([a2 < 1]),
+		PathCond([a2 == 5]),
+		PathCond([a3 < 1]),
+		PathCond([a3 == 5]),
+		PathCond([a4 < 1]),
+		PathCond([a4 == 5]),
+		PathCond([a5 < 1]),
+		PathCond([a5 == 5])
+	]
+	return inp, bad_pathconds
+	
+inp, bad_pathconds = ex5f1()
+Adapter(inp, bad_pathconds).doit()
 
 		
