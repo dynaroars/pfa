@@ -189,7 +189,7 @@ def ex2a():
 
 
 inp, bad_pathconds = ex2a()
-Adapter(inp, bad_pathconds).doit()
+# Adapter(inp, bad_pathconds).doit()
 
 # EXAMPLE 3: Didier's
 
@@ -236,11 +236,12 @@ def ex3b():
         PathCond([y0 != y2, y1 != y3, y2 == y4]),
         PathCond([y0 != y2, y1 != y3, y2 != y4, y3 == y5])
     ]
-
+	
+	
     return inp, bad_pathconds
 
 inp, bad_pathconds = ex3b()
-Adapter(inp, bad_pathconds).doit()
+# Adapter(inp, bad_pathconds).doit()
 
 
 
@@ -255,3 +256,32 @@ Adapter(inp, bad_pathconds).doit()
 # print(inp.create_constraint(idxs={5}))
 
 # inp.create_constraints_k(2)
+
+
+#EXAMPLE 4: Factorial
+# def f_ex4(a):
+	# for x in a:
+		# fac = math.factorial(x)
+
+# a = [5]
+# f_ex4(a)
+		
+def ex4a():
+	a1, a2, a3, a4, a5 = z3.Ints('a1 a2 a3 a4 a5')
+	inp = Input([a1, a2, a3, a4, a5],[3, 5, 5, -3, -4])
+	bad_pathconds = [
+		PathCond([a1 < 0]),
+		PathCond([a2 < 0]),
+		PathCond([a3 < 0]),
+		PathCond([a4 < 0]),
+		PathCond([a5 < 0])
+	]
+	
+	return inp, bad_pathconds
+	
+inp, bad_pathconds = ex4a()
+Adapter(inp, bad_pathconds).doit()
+
+
+
+		
