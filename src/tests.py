@@ -259,16 +259,27 @@ inp, bad_pathconds = ex3b()
 
 
 #EXAMPLE 4: Factorial
-# def f_ex4(a):
-	# for x in a:
-		# fac = math.factorial(x)
-
+def f1_ex4(a):
+	for x in a:
+		fac = math.factorial(x)
+# a = [1, 3, 5]			
 # a = [5]
-# f_ex4(a)
-		
-def ex4a():
+# f1_ex4(a)
+
+
+
+
+def f2_ex4(a):
+	for i in range(len(a)-1):
+		if a[i] < a[i + 1]:
+			fac = (math.factorial(a[i]))/(2-a[i])
+		else:
+			continue
+			
+			
+def ex4f1():
 	a1, a2, a3, a4, a5 = z3.Ints('a1 a2 a3 a4 a5')
-	inp = Input([a1, a2, a3, a4, a5],[3, 5, 5, -3, -4])
+	inp = Input([a1, a2, a3, a4, a5],[-3, -2, -1, 1, 2])
 	bad_pathconds = [
 		PathCond([a1 < 0]),
 		PathCond([a2 < 0]),
@@ -279,8 +290,27 @@ def ex4a():
 	
 	return inp, bad_pathconds
 	
-inp, bad_pathconds = ex4a()
+inp, bad_pathconds = ex4f1()
 Adapter(inp, bad_pathconds).doit()
+		
+def ex4f2():
+	a1, a2, a3, a4, a5 = z3.Ints('a1 a2 a3 a4 a5')
+	inp = Input([a1, a2, a3, a4, a5],[-3, -2, -1, 1, 2])
+	bad_pathconds = [
+		PathCond([a1 < a2, a1 < 0]),
+		PathCond([a1 < a2, a1 == 2]),
+		PathCond([a2 < a3, a2 < 0]),
+		PathCond([a2 < a3, a2 == 2]),
+		PathCond([a3 < a4, a3 < 0]),
+		PathCond([a3 < a4, a3 == 2]),
+		PathCond([a4 < a5, a4 < 0]),
+		PathCond([a4 < a5, a4 == 2]),
+	]
+	
+	return inp, bad_pathconds
+	
+inp, bad_pathconds = ex4f2()
+# Adapter(inp, bad_pathconds).doit()
 
 
 
