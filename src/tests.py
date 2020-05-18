@@ -14,37 +14,42 @@ from adapter import Input, PathCond, Adapter
 # print(result)
 
 def check_square_root(a, b, c):
-	if (-2 < a < 5):
-		if (c < 6):
-			result = (math.sqrt(2 - b))/(3 - c) # potentially square root and dividing by zero error 1
-		else:
-			result = math.sqrt(c) # potentially square root error 2
-	else:
-		result = math.sqrt(a) # potentially square root error 3
-		
+    if (-2 < a < 5):
+        if (c < 6):
+            # potentially square root and dividing by zero error 1
+            result = (math.sqrt(2 - b))/(3 - c)
+        else:
+            result = math.sqrt(c)  # potentially square root error 2
+    else:
+        result = math.sqrt(a)  # potentially square root error 3
+
+
 def ex1_square_root():
-	#path condition resulting in square root error 1
-	mya, myb, myc = z3.Ints('a b c')
-	inp = Input([mya, myb, myc], [3, 4, 3])
-	bad_pathconds = [
-		PathCond([mya > -2, mya < 5, myc < 6, myc == 3]),
-		PathCond([mya > -2, mya < 5, myc < 6, myb > 2])
-	]
-	
-	return inp, bad_pathconds
+    # path condition resulting in square root error 1
+    mya, myb, myc = z3.Ints('a b c')
+    inp = Input([mya, myb, myc], [3, 4, 3])
+    bad_pathconds = [
+        PathCond([mya > -2, mya < 5, myc < 6, myc == 3]),
+        PathCond([mya > -2, mya < 5, myc < 6, myb > 2])
+    ]
+
+    return inp, bad_pathconds
+
 
 inp, bad_pathconds = ex1_square_root()
 # Adapter(inp, bad_pathconds).doit()
 
+
 def ex2_square_root():
-	#path condition resulting in square root error 2
-	mya, myb, myc = z3.Ints('a b c')
-	inp = Input([mya, myb, myc], [3, 4, -5])
-	bad_pathconds = [
-		PathCond([mya > -2, mya < 5, myc < 0 ])
-	]
-	
-	return inp, bad_pathconds
+    # path condition resulting in square root error 2
+    mya, myb, myc = z3.Ints('a b c')
+    inp = Input([mya, myb, myc], [3, 4, -5])
+    bad_pathconds = [
+        PathCond([mya > -2, mya < 5, myc < 0])
+    ]
+
+    return inp, bad_pathconds
+
 
 inp, bad_pathconds = ex2_square_root()
 # Adapter(inp, bad_pathconds).doit()
@@ -52,64 +57,72 @@ inp, bad_pathconds = ex2_square_root()
 # EXAMPLE 1: Guolong's example
 
 # def f(i, j, k):
-    # if(0 < i < 10):
-        # if(i < 5):
-            # o = 5 / (i - 2)   # err1
-        # else:
-            # o = 6 / (i - 3)   # err2
-    # else:
-        # o = 2*i
-        # o = 2*i
+# if(0 < i < 10):
+# if(i < 5):
+# o = 5 / (i - 2)   # err1
+# else:
+# o = 6 / (i - 3)   # err2
+# else:
+# o = 2*i
+# o = 2*i
 
-def f1(a, b, c, d): 
-	if(a > 2):
-		if(b > 1):
-			result = (12 + c)/(d - 1) #error 1
-		else:
-			result = (4 - a)/(2 - b) #error 2
-	else:
-		result = (a + b) * d
+
+def f1(a, b, c, d):
+    if(a > 2):
+        if(b > 1):
+            result = (12 + c)/(d - 1)  # error 1
+        else:
+            result = (4 - a)/(2 - b)  # error 2
+    else:
+        result = (a + b) * d
+
 
 def exf1a():
-	# path condition resulting in error 1: a > 2 & b > 1 & d > 1
-	mya, myb, myc, myd = z3.Ints('a b c d')
-	inp = Input([mya, myb, myc, myd], [3, 2, 6, 1])
-	bad_pathconds = [PathCond([mya > 2, myb > 1, myd == 1])]
-	
-	return inp, bad_pathconds
+    # path condition resulting in error 1: a > 2 & b > 1 & d > 1
+    mya, myb, myc, myd = z3.Ints('a b c d')
+    inp = Input([mya, myb, myc, myd], [3, 2, 6, 1])
+    bad_pathconds = [PathCond([mya > 2, myb > 1, myd == 1])]
+
+    return inp, bad_pathconds
+
 
 inp, bad_pathconds = exf1a()
 # Adapter(inp, bad_pathconds).doit()
 
+
 def exf1b():
-	# path condition resulting in error 2: a > 2 & b > 1 & b == 2
-	mya, myb, myc, myd = z3.Ints('a b c d')
-	inp = Input([mya, myb, myc, myd], [3, 2, 3, 4])
-	bad_pathconds = [PathCond([mya > 2, myb > 1, myb == 2])]
-	
-	return inp, bad_pathconds
+    # path condition resulting in error 2: a > 2 & b > 1 & b == 2
+    mya, myb, myc, myd = z3.Ints('a b c d')
+    inp = Input([mya, myb, myc, myd], [3, 2, 3, 4])
+    bad_pathconds = [PathCond([mya > 2, myb > 1, myb == 2])]
+
+    return inp, bad_pathconds
+
 
 inp, bad_pathconds = exf1b()
 # Adapter(inp, bad_pathconds).doit()
 
+
 def exf1c():
-	"""
-    violated path conditions to error 1 + a fake one:
-    - a > 2 & b > 1 & d == 1
-    - c >= 0
-    can be fixed by changing d to !1 and c to < 0
     """
-	mya, myb, myc, myd = z3.Ints('a b c d')
-	inp = Input([mya, myb, myc, myd], [3, 2, 6, 1])
-	bad_pathconds = [
-		PathCond([mya > 2, myb > 1, myd == 1]),
-		PathCond([myc >=0])
-	]
-	
-	return inp, bad_pathconds
+violated path conditions to error 1 + a fake one:
+- a > 2 & b > 1 & d == 1
+- c >= 0
+can be fixed by changing d to !1 and c to < 0
+"""
+    mya, myb, myc, myd = z3.Ints('a b c d')
+    inp = Input([mya, myb, myc, myd], [3, 2, 6, 1])
+    bad_pathconds = [
+        PathCond([mya > 2, myb > 1, myd == 1]),
+        PathCond([myc >= 0])
+    ]
+
+    return inp, bad_pathconds
+
 
 inp, bad_pathconds = exf1c()
 # Adapter(inp, bad_pathconds).doit()
+
 
 def ex1a():
     # path condition leading to err1: 0 < i < 10 & i < 5 & i = 2
@@ -118,6 +131,7 @@ def ex1a():
     bad_pathconds = [PathCond([0 < myi, myi < 10, myi < 5, myi == 2])]
 
     return inp, bad_pathconds
+
 
 inp, bad_pathconds = ex1a()
 #Adapter(inp, bad_pathconds).doit()
@@ -133,7 +147,6 @@ def ex1b():
     bad_pathconds = [PathCond([0 < myi, myi < 10, myi < 5, myi == 3])]
 
     return inp, bad_pathconds
-
 
 
 inp, bad_pathconds = ex1b()
@@ -164,18 +177,17 @@ inp, bad_pathconds = ex1c()
 # EXAMPLE 2: from PFA proposal
 
 
-
 # int vandi ( char* str )
 # {
 # char id [3];
 # assert ( *str != '_' ) ;
 # if ( isvalid(str)) {
-  # int i = 0;
-  # while ( *str != null )
-    # id [ i++] = *str++;
-    # return intern ( id ) ;
+# int i = 0;
+# while ( *str != null )
+# id [ i++] = *str++;
+# return intern ( id ) ;
 # } else
-  # // default behavior
+# // default behavior
 # return 1;
 # }
 
@@ -195,21 +207,20 @@ inp, bad_pathconds = ex2a()
 
 # $input int y[5];
 # int * derivative(int y[], int size){
-    # int h = 1;
-    # int diff[size];
-    # diff[0]=0;
-    # for (int i = 1; i < size-1; i++) {
-        # diff[i] = 2*h/(-y[i-1]+y[i+1]); //possible div by zero
-        # $pathCondition();
-    # }
-    # diff[size-1]=0;
-    # return diff;
+# int h = 1;
+# int diff[size];
+# diff[0]=0;
+# for (int i = 1; i < size-1; i++) {
+# diff[i] = 2*h/(-y[i-1]+y[i+1]); //possible div by zero
+# $pathCondition();
+# }
+# diff[size-1]=0;
+# return diff;
 # }
 # int main() {
-  # derivative(y,5);
-  # return 0;
+# derivative(y,5);
+# return 0;
 # }
-
 
 
 def ex3a():
@@ -224,8 +235,10 @@ def ex3a():
 
     return inp, bad_pathconds
 
+
 inp, bad_pathconds = ex3a()
 # Adapter(inp, bad_pathconds).doit()
+
 
 def ex3b():
     y0, y1, y2, y3, y4, y5 = z3.Ints('y0 y1 y2 y3 y4 y5')
@@ -236,13 +249,12 @@ def ex3b():
         PathCond([y0 != y2, y1 != y3, y2 == y4]),
         PathCond([y0 != y2, y1 != y3, y2 != y4, y3 == y5])
     ]
-	
-	
+
     return inp, bad_pathconds
+
 
 inp, bad_pathconds = ex3b()
 # Adapter(inp, bad_pathconds).doit()
-
 
 
 # MISCS
@@ -258,87 +270,90 @@ inp, bad_pathconds = ex3b()
 # inp.create_constraints_k(2)
 
 
-#EXAMPLE 4: Factorial
+# EXAMPLE 4: Factorial
 def f1_ex4(a):
-	for x in a:
-		fac = math.factorial(x)
-# a = [1, 3, 5]			
+    for x in a:
+        fac = math.factorial(x)
+# a = [1, 3, 5]
 # a = [5]
 # f1_ex4(a)
 
 
-
-
 def f2_ex4(a):
-	for i in range(len(a)-1):
-		if a[i] < a[i + 1]:
-			fac = (math.factorial(a[i]))/(2-a[i])
-		else:
-			continue
-			
-			
+    for i in range(len(a)-1):
+        if a[i] < a[i + 1]:
+            fac = (math.factorial(a[i]))/(2-a[i])
+        else:
+            continue
+
+
 def ex4f1():
-	a1, a2, a3, a4, a5 = z3.Ints('a1 a2 a3 a4 a5')
-	inp = Input([a1, a2, a3, a4, a5],[-3, -2, -1, 1, 2])
-	bad_pathconds = [
-		PathCond([a1 < 0]),
-		PathCond([a2 < 0]),
-		PathCond([a3 < 0]),
-		PathCond([a4 < 0]),
-		PathCond([a5 < 0])
-	]
-	
-	return inp, bad_pathconds
-	
+    a1, a2, a3, a4, a5 = z3.Ints('a1 a2 a3 a4 a5')
+    inp = Input([a1, a2, a3, a4, a5], [-3, -2, -1, 1, 2])
+    bad_pathconds = [
+        PathCond([a1 < 0]),
+        PathCond([a2 < 0]),
+        PathCond([a3 < 0]),
+        PathCond([a4 < 0]),
+        PathCond([a5 < 0])
+    ]
+
+    return inp, bad_pathconds
+
+
 inp, bad_pathconds = ex4f1()
 # Adapter(inp, bad_pathconds).doit()
-		
+
+
 def ex4f2():
-	a1, a2, a3, a4, a5 = z3.Ints('a1 a2 a3 a4 a5')
-	inp = Input([a1, a2, a3, a4, a5],[-3, -2, -1, 1, 2])
-	bad_pathconds = [
-		PathCond([a1 < a2, a1 < 0]),
-		PathCond([a1 < a2, a1 == 2]),
-		PathCond([a2 < a3, a2 < 0]),
-		PathCond([a2 < a3, a2 == 2]),
-		PathCond([a3 < a4, a3 < 0]),
-		PathCond([a3 < a4, a3 == 2]),
-		PathCond([a4 < a5, a4 < 0]),
-		PathCond([a4 < a5, a4 == 2]),
-	]
-	
-	return inp, bad_pathconds
-	
+    a1, a2, a3, a4, a5 = z3.Ints('a1 a2 a3 a4 a5')
+    inp = Input([a1, a2, a3, a4, a5], [-3, -2, -1, 1, 2])
+    bad_pathconds = [
+        PathCond([a1 < a2, a1 < 0]),
+        PathCond([a1 < a2, a1 == 2]),
+        PathCond([a2 < a3, a2 < 0]),
+        PathCond([a2 < a3, a2 == 2]),
+        PathCond([a3 < a4, a3 < 0]),
+        PathCond([a3 < a4, a3 == 2]),
+        PathCond([a4 < a5, a4 < 0]),
+        PathCond([a4 < a5, a4 == 2]),
+    ]
+
+    return inp, bad_pathconds
+
+
 inp, bad_pathconds = ex4f2()
 # Adapter(inp, bad_pathconds).doit()
 
-#EXAMPLE 5: Logarithm
+# EXAMPLE 5: Logarithm
+
+
 def f1_ex5(a):
-	for x in a:
-		l = (math.log(x))/(x-5)
-		print(l)
-		
+    for x in a:
+        l = (math.log(x))/(x-5)
+        print(l)
+
 # a = [1,2,3,4,5]
 # f1_ex5(a)
 
+
 def ex5f1():
-	a1, a2, a3, a4, a5 = z3.Ints('a1 a2 a3 a4 a5')
-	inp = Input([a1, a2, a3, a4, a5],[5, -5, 5, -5, 5])
-	bad_pathconds = [
-		PathCond([a1 < 1]),
-		PathCond([a1 == 5]),
-		PathCond([a2 < 1]),
-		PathCond([a2 == 5]),
-		PathCond([a3 < 1]),
-		PathCond([a3 == 5]),
-		PathCond([a4 < 1]),
-		PathCond([a4 == 5]),
-		PathCond([a5 < 1]),
-		PathCond([a5 == 5])
-	]
-	return inp, bad_pathconds
-	
+    a1, a2, a3, a4, a5 = z3.Ints('a1 a2 a3 a4 a5')
+    inp = Input([a1, a2, a3, a4, a5], [5, -5, 5, -5, 5])
+    bad_pathconds = [
+        PathCond([a1 < 1]),
+        PathCond([a1 == 5]),
+        PathCond([a2 < 1]),
+        PathCond([a2 == 5]),
+        PathCond([a3 < 1]),
+        PathCond([a3 == 5]),
+        PathCond([a4 < 1]),
+        PathCond([a4 == 5]),
+        PathCond([a5 < 1]),
+        PathCond([a5 == 5])
+    ]
+    return inp, bad_pathconds
+
+
 inp, bad_pathconds = ex5f1()
 Adapter(inp, bad_pathconds).doit()
-
-		
