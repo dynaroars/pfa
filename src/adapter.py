@@ -10,6 +10,7 @@ class PathCond:
         assert isinstance(conjs, list), conjs
         assert conjs, conjs
 
+        print(conjs)
         self.conjs = conjs
 
     def __str__(self):
