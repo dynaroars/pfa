@@ -10,7 +10,6 @@ class PathCond:
         assert isinstance(conjs, list), conjs
         assert conjs, conjs
 
-        print(conjs)
         self.conjs = conjs
 
     def __str__(self):
@@ -92,11 +91,20 @@ class Input:
 
         solver = z3.Solver()
         for i, bpc in enumerate(bad_pathconds):
+            print('checking:')
+            print(bpc)
             f = z3.Not(z3.Implies(self.constraint, bpc.constraint))
+            print(self.constraint)
+            # f = z3.And(self.constraint, bpc.constraint)
+            # print('simplify is')
+            # print(z3.simplify(z3.And(bpc.constraint, self.constraint)))
             solver.reset()
             solver.add(f)
+            print(solver)
             stat = solver.check(f)
+            print(stat)
             if stat == z3.unsat:
+                print(i)
                 return i
 
         return None
@@ -125,18 +133,24 @@ class Adapter:
         inp = self.inp
         iteration = 0
         sat_constrs = []
+        print(remains[0])
         while True:
             iteration += 1
+            # print('input is')
+            # print(inp)
             print("** iteration {} **".format(iteration))
             print("checking inp: {} against {} bad conds".format(inp, len(remains)))
             bad_cond_idx = inp.check(remains)
+            # print(bad_cond_idx)
             if bad_cond_idx is None:  # pass all remains
                 print("avoided all bad path conds.\nDone!")
                 break
             bad_cond = remains[bad_cond_idx]
             print("found one bad cond: {}".format(bad_cond))
-            inp, sat_constr = self.generate_new_input(bad_cond, sat_constrs)
+            inp, sat_constr = self.generate_new_input(bad_cond, sat_constrs)		
             sat_constrs.append(sat_constr)
+            print('Constraint')
+            print(sat_constrs)
             if inp is None:
                 print("cannot modify input to avoid bad path")
                 break
@@ -154,12 +168,14 @@ class Adapter:
         hard_constr = bad_pathcond.get_new().constraint
         hard_constrs = sat_constrs + [hard_constr]
         orig_inp_len = len(self.inp.zvars)
+        # print(orig_inp_len)        
         for k in range(1, orig_inp_len):
             print("attempting inp that is {} ({}/{}) similar to orig".format(
                 (orig_inp_len - k) * 100. / float(orig_inp_len),
                 orig_inp_len - k, orig_inp_len))
             soft_constr = self.inp.create_constraints_k(k)
             inp = self.inp.gen(hard_constrs, soft_constr)
+            print(inp)
             if inp:
                 return inp, hard_constr
 
