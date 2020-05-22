@@ -48,13 +48,16 @@ class Input:
         conjs = [var == val for i, (var, val) in
                  enumerate(zip(self.zvars, self.zvals))
                  if i not in idxs]
+        print(conjs)
         assert conjs
         return z3.And(conjs) if len(conjs) >= 2 else conjs[0]
 
     def create_constraints_k(self, k):
         #assert k >= 1, k
         disjs = []
+        print('length is {}'.format(len(self.zvars)))
         for idxs in itertools.combinations(range(len(self.zvars)), k):
+            print('idx is {}'.format(idxs))
             disjs.append(self.create_constraint(idxs))
 
         assert disjs
@@ -91,19 +94,25 @@ class Input:
 
         solver = z3.Solver()
         for i, bpc in enumerate(bad_pathconds):
-            print('checking:')
+            print('bpc is:')
             print(bpc)
             f = z3.Not(z3.Implies(self.constraint, bpc.constraint))
+            print('printing self.constraint: ')
             print(self.constraint)
+            print('printing bpc.constraint: ')
+            print(bpc.constraint)
             # f = z3.And(self.constraint, bpc.constraint)
             # print('simplify is')
             # print(z3.simplify(z3.And(bpc.constraint, self.constraint)))
             solver.reset()
             solver.add(f)
+            print('printing solver: ')
             print(solver)
             stat = solver.check(f)
+            print('printing stat: ')
             print(stat)
             if stat == z3.unsat:
+                print('index is')
                 print(i)
                 return i
 
@@ -134,6 +143,7 @@ class Adapter:
         iteration = 0
         sat_constrs = []
         print(remains[0])
+        print('testing a bit')
         while True:
             iteration += 1
             # print('input is')
@@ -141,7 +151,8 @@ class Adapter:
             print("** iteration {} **".format(iteration))
             print("checking inp: {} against {} bad conds".format(inp, len(remains)))
             bad_cond_idx = inp.check(remains)
-            # print(bad_cond_idx)
+            print('bad_cond_idx is:')
+            print(bad_cond_idx)
             if bad_cond_idx is None:  # pass all remains
                 print("avoided all bad path conds.\nDone!")
                 break
@@ -168,7 +179,19 @@ class Adapter:
         hard_constr = bad_pathcond.get_new().constraint
         hard_constrs = sat_constrs + [hard_constr]
         orig_inp_len = len(self.inp.zvars)
-        # print(orig_inp_len)        
+        print('orig_inp_len is: ') 
+        print(orig_inp_len) 
+        # print('abcd')
+        # if orig_inp_len == 1:
+            # print("attempting inp that is {} ({}/{}) similar to orig".format(
+                # (orig_inp_len) * 100. / float(orig_inp_len),
+                # orig_inp_len, orig_inp_len))
+            # soft_constr = self.inp.create_constraints_k(1)
+            # inp = self.inp.gen(hard_constrs, soft_constr)
+            # print(inp)
+            # if inp:
+                # return inp, hard_constr
+            
         for k in range(1, orig_inp_len):
             print("attempting inp that is {} ({}/{}) similar to orig".format(
                 (orig_inp_len - k) * 100. / float(orig_inp_len),
