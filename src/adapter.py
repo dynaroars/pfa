@@ -104,7 +104,6 @@ class Input:
             print('printing bpc.constraint: {}'.format(bpc.constraint))
             # if self.constraint == bpc.constraint:
                 # f = self.constraint, bpc.constraint
-                # print('deptrai vai cac')
             # f = z3.And(self.constraint, bpc.constraint)
             # print(z3.simplify(z3.And(bpc.constraint, self.constraint)))
             solver.reset()
