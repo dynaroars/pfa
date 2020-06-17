@@ -1,3 +1,4 @@
 src/.vscode/
 *.exe
 *.obj
+src/__pycache__

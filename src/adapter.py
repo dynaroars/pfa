@@ -152,6 +152,8 @@ class Adapter:
 
         hard_constr = bad_pathcond.get_new().constraint
         hard_constrs = sat_constrs + [hard_constr]
+        print("testing hard: {}".format(hard_constrs))
+        print("testing sat_constr: {}".format(sat_constrs))
         orig_inp_len = len(self.inp.zvars)
         for k in range(1, orig_inp_len):
             print("attempting inp that is {} ({}/{}) similar to orig".format(

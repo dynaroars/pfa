@@ -17,20 +17,15 @@ public:
      * Each combination is stored in a set<int>
      */
     static vector<set<int>> combinations(int n, int k) {
-        cout << "!!! Combination: " << n << ' ' << k << endl;
         vector<set<int>> ret;
         string bit(k, 1);
         bit.resize(n, 0);
         do {
             set<int> curPermu;
-            cout << "!!! ";
             for(int i = 0; i < n; i++)
-                if (bit[i]) {
+                if (bit[i]) 
                     curPermu.insert(i);
-                    cout << i << ' ';
-                }
             ret.push_back(curPermu);
-            cout << endl;
         } while (prev_permutation(bit.begin(), bit.end()));
         return ret;
     }
@@ -55,7 +50,9 @@ public:
             exit(0);
         }
         this->c = c;
-        this->conjs = new expr_vector(conjs);
+        this->conjs = new expr_vector(*c);
+        for(int i = 0; i < conjs.size(); i++)
+            this->conjs->push_back(conjs[i]);
     }
     
     expr constraint() {
@@ -129,14 +126,16 @@ public:
     Input* gen(expr_vector hardConstrs, expr softConstr) {
         cout << "hard: " << hardConstrs << endl;
         cout << "soft: " << softConstr << endl;
-        cout << "end of constraint" << endl << endl;
 
         solver sol = solver(*c);
 
-        hardConstrs.push_back(softConstr);
-        expr constrs = mk_and(hardConstrs);
-        sol.add(constrs);
-        if (sol.check() != sat)
+        expr_vector constrs = expr_vector(*c);
+        for(int i = 0; i < hardConstrs.size(); i++)
+            constrs.push_back(hardConstrs[i]);
+        constrs.push_back(softConstr);
+        expr constr = mk_and(constrs);
+        sol.add(constr);
+        if (sol.check() != sat) 
             return NULL;
         
         model m = sol.get_model();
@@ -152,21 +151,12 @@ public:
     int check(vector<PathCond> badPathConds) {
         solver sol = solver(*c);
         for(int i = 0; i < badPathConds.size(); i++) {
-            cout << "checking" << endl;
-            cout << badPathConds[i] << endl;
-            // cout << constraint() << endl;
-            // cout << badPathConds[i].constraint() << endl;
             expr f = !(implies(constraint(), badPathConds[i].constraint()));
-            cout << constraint() << endl;
             sol.reset();
             sol.add(f);
-            cout << sol << endl;
             check_result isStat = sol.check();
-            cout << isStat << endl;
-            if (isStat == unsat) {
-                cout << i << endl;
+            if (isStat == unsat) 
                 return i;
-            }
         }
         return -1; // replaces None
     }
@@ -204,12 +194,11 @@ public:
     void doit() {
         vector<PathCond> remains = badPathConds;
         pair<Input*, expr> p = pair<Input*, expr>(NULL, expr(*c)); 
-        p.first = new Input(*(this->inp.getZVars()), *(this->inp.getZVals()), c);
+        p.first = &(this->inp);
         int iteration = 0;
         expr_vector satConstrs = expr_vector(*c);
-        cout << remains[0] << endl;
         while (++iteration) {
-            cout << "** iteration " << iteration << " **" << endl;
+            cout << endl << "** iteration " << iteration << " **" << endl;
             cout << "checking inp: " << *p.first << " against " << remains.size() << " bad conds" << endl;
             int badCondIdx = p.first->check(remains);
             if (badCondIdx == -1) {
@@ -220,13 +209,12 @@ public:
             cout << "found one bad cond: " << badCond << endl;
             p = generate_new_input(badCond, satConstrs);
             satConstrs.push_back(p.second);
-            cout << "Constraint" << endl << satConstrs << endl;
             if (p.first == NULL) {
                 cout << "cannot modify input to avoid bad path" << endl;
                 break;
             }
             cout << "found inp: " << *p.first << endl;
-            remains.erase(remains.begin() + badCondIdx);    // Double-check where badCondIdx starts?
+            remains.erase(remains.begin() + badCondIdx);    
         }
         if (p.first != NULL)
             cout << "resulting inp: " << (*p.first) << endl; 
@@ -234,7 +222,9 @@ public:
 
     pair<Input*, expr> generate_new_input(PathCond badPathCond, expr_vector satConstrs) {
         expr hardConstr = badPathCond.get_new().constraint();
-        expr_vector hardConstrs = expr_vector(satConstrs);
+        expr_vector hardConstrs = expr_vector(*c);
+        for(int i = 0; i < satConstrs.size(); i++)
+            hardConstrs.push_back(satConstrs[i]);
         hardConstrs.push_back(hardConstr);
         int oriInpLen = (this->inp.getZVars())->size();
         for(int k = 1; k < oriInpLen; k++) {
@@ -242,7 +232,6 @@ public:
             cout << " (" << oriInpLen - k << "/" << oriInpLen << ") similar to orig" << endl;
             expr softConstr = this->inp.create_constraints_k(k);
             Input* inp = (this->inp.gen(hardConstrs, softConstr));
-            cout << *inp << endl;
             if (inp) 
                 return pair<Input*, expr>(inp, hardConstr);
         }
