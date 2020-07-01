@@ -12,10 +12,12 @@ int main() {
     expr b = con.int_const("b");
     expr c = con.int_const("c");
     expr d = con.int_const("d");
+    expr e = con.int_const("e");
     validConds.push_back((con.int_val(1) <= a));
     validConds.push_back(a < b);
     validConds.push_back(d > con.int_val(3));
-    validConds.push_back(d <= con.int_val(5));
+    validConds.push_back(d < e);
+    validConds.push_back(e <= con.int_val(100));
     validConds.push_back(b <= c);
     validConds.push_back(con.int_val(4) >= b);
     validConds.push_back(c < con.int_val(10));
