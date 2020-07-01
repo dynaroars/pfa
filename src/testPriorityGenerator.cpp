@@ -14,10 +14,10 @@ int main() {
     expr d = con.int_const("d");
     validConds.push_back((con.int_val(1) <= a));
     validConds.push_back(a < b);
-    validConds.push_back(con.int_val(4) < d);
+    validConds.push_back(d > con.int_val(3));
     validConds.push_back(d <= con.int_val(5));
     validConds.push_back(b <= c);
-    validConds.push_back(b <= con.int_val(4));
+    validConds.push_back(con.int_val(4) >= b);
     validConds.push_back(c < con.int_val(10));
     PriorityGenerator priorityGen = PriorityGenerator(validConds, &con);
     priorityGen.printGraph();
