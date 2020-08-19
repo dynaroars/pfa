@@ -25,26 +25,32 @@ int main() {
     // Define Input
     Input inp = Input(vars, vals, &c);
 
-    // Define bad conditions
-    vector<PathCond> badPathConds;
-    expr_vector conjs = expr_vector(c);     // Cond 1
-    conjs.push_back(y <= x);
-    badPathConds.push_back(PathCond(conjs, &c));
-    conjs = expr_vector(c);                 // Cond 2
-    conjs.push_back(x < c.int_val(2));
-    badPathConds.push_back(PathCond(conjs, &c));
-    conjs = expr_vector(c);                 // Cond 3
-    conjs.push_back(x >= c.int_val(4));
-    badPathConds.push_back(PathCond(conjs, &c));
-    conjs = expr_vector(c);                 // Cond 2
-    conjs.push_back(y < c.int_val(2));
-    badPathConds.push_back(PathCond(conjs, &c));
-    conjs = expr_vector(c);                 // Cond 3
-    conjs.push_back(y >= c.int_val(4));
-    badPathConds.push_back(PathCond(conjs, &c));
+    expr tmp = (c.int_val(2) >= y);
+    func_decl tmpp = tmp.decl();
+    cout << tmp.to_string() << " " << tmp.arg(0) << " " << tmp.arg(1) << endl;
+    cout << tmpp.name().str() << endl;
+    cout << (c.int_val(3)).is_numeral();
 
-    // Execute
-    Adapter adap = Adapter(inp, badPathConds, &c);
-    adap.doit();
+    // // Define bad conditions
+    // vector<PathCond> badPathConds;
+    // expr_vector conjs = expr_vector(c);     // Cond 1
+    // conjs.push_back(y <= x);
+    // badPathConds.push_back(PathCond(conjs, &c));
+    // conjs = expr_vector(c);                 // Cond 2
+    // conjs.push_back(x < c.int_val(2));
+    // badPathConds.push_back(PathCond(conjs, &c));
+    // conjs = expr_vector(c);                 // Cond 3
+    // conjs.push_back(x >= c.int_val(4));
+    // badPathConds.push_back(PathCond(conjs, &c));
+    // conjs = expr_vector(c);                 // Cond 2
+    // conjs.push_back(y < c.int_val(2));
+    // badPathConds.push_back(PathCond(conjs, &c));
+    // conjs = expr_vector(c);                 // Cond 3
+    // conjs.push_back(y >= c.int_val(4));
+    // badPathConds.push_back(PathCond(conjs, &c));
+
+    // // Execute
+    // Adapter adap = Adapter(inp, badPathConds, &c);
+    // adap.doit();
     return 0;
 }

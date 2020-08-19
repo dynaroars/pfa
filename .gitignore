@@ -2,3 +2,4 @@ src/.vscode/
 *.exe
 *.obj
 src/__pycache__
+src/quixbugs

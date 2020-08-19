@@ -2,25 +2,19 @@
 
 $input int a, b;
 
-// correct version
-int gcd_c(int a, int b) {
-        if (b == 0) {
-            return a;
-        } else {
-            return gcd_c(b, a%b);
-        }
+int gcd(int a, int b, int count) {
+    if (count > 100)
+        return -1;
+    if (b == 0) {
+        return a;
+    } else {
+        return gcd(a % b, b, count + 1);
     }
-
-// buggy version
-int gcd(int a, int b) {
-        if (b == 0) {
-            return a;
-        } else {
-            return gcd(a % b, b);
-        }
-    }
+}
 
 void main(){
-    $assume( 0< a && a < 5 && 0<b && b < 5);
-    $assert( gcd_c(a, b) == gcd(a, b) );
+    //$assume( 0< a && a < 5 && 0<b && b < 5);
+    if (gcd(a, b, 0) == -1) {
+        $pathCondition();
+    }
 }
